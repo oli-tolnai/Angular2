@@ -88,6 +88,6 @@ hello(message)
 ide kell még a kód
 ```
 
-![input-output.png](//kepek/input-output.jpg)
+![input-output.png](https://github.com/oli-tolnai/Angular2/blob/main/kepek/input-output.jpg)
 
 
