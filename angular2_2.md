@@ -88,6 +88,6 @@ hello(message)
 ide kell még a kód
 ```
 
-**FOTÓ kell ide**
+![input-output.png](//kepek/input-output.jpg)
 
 
