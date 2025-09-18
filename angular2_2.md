@@ -28,9 +28,10 @@ ng g c child
 Fő komponens: app, ezen belül van egy parent komponens és a parentben van egy child komponens, és azt szerentnénk hogy a parent-ben van egy tömbünk és a childnak át akarjuk adni ezt a tömböt.
 
 ### @Input - @Output:
->Input: A child komponensbe bele tudunk olyan elemeket rakni amik a parent komponenesben találhatóak meg.
+Input: A child komponensbe bele tudunk olyan elemeket rakni amik a parent komponenesben találhatóak meg.
 
->Output: A child komponensben van egy gomb de azt szeretnémhogy a parent komponsensen történjen valami, és egy ottani függvény fusson le.
+Output: A child komponensben van egy gomb de azt szeretnémhogy a parent komponsensen történjen valami, és egy ottani függvény fusson le.
+
 ---
 `MyObject class`:
 ```ts MyObject class
@@ -93,4 +94,4 @@ hello(message: MyObject): void {
 ![input-output.png](https://github.com/oli-tolnai/Angular2/blob/main/kepek/input-output.jpg)
 
 
-> Ezekkel lehetőségünk van például a bootstrap cardokhoz hasonlóakat csinálni. Létrehozhatunk egy sablon komponenst, aminek a tulajdonságait egy másik komponensen belül adjuk meg. Erre példa az [angular-button-component](https://github.com/siposm/bprof-frontend-weekly/tree/master/angular/angular-button-component), ahol van egy `button` komponensünk, amit beleillesztünk az `app` komponensbe, ahol megadjuk neki, hogy mi legyen a felirat, milyen stílusú legyen stb. És ehhez elegendő nekünk az `@Input`-ot használni
+Ezekkel lehetőségünk van például a bootstrap cardokhoz hasonlóakat csinálni. Létrehozhatunk egy sablon komponenst, aminek a tulajdonságait egy másik komponensen belül adjuk meg. Erre példa az [angular-button-component](https://github.com/siposm/bprof-frontend-weekly/tree/master/angular/angular-button-component), ahol van egy `button` komponensünk, amit beleillesztünk az `app` komponensbe, ahol megadjuk neki, hogy mi legyen a felirat, milyen stílusú legyen stb. És ehhez elegendő nekünk az `@Input`-ot használni
