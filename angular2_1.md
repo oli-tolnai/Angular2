@@ -1,5 +1,7 @@
 # Angular2 1.hét 1.óra
 
+## TANANYAG: menetrend
+
 6. hét konzultáció
 7. hét cs-p szünet
 8. hét 1.zh elméleti+gyakorlat
@@ -11,16 +13,21 @@ Nincs féléves feladat
 
 10:30-tól fog kezdődni az óra
 
+## TANANYAG: environments
 
-eddig ezeket használtuk:
+Eddig ezeket használtuk:
+```cmd
 ng new appname --standalone-false
 ng g s ...
 ng g c ...
 ng g class ...
+```
 
-most bevezetünk egy újat:
+Most bevezetünk egy újat:
+```cmd
 ng g environments
-ide szervezzük ki pl az api url-t és az api kulcsokat
+```
+Ide szervezzük ki pl az api url-t és az api kulcsokat
 
 
 
