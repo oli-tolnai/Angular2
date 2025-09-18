@@ -23,14 +23,13 @@ ng g c parent
 ng g c child
 ```
 
-> a komponensek ugyanannyira univerzálisan felhasználható mint pl c#-ban egy osztály
+> A komponensek ugyanannyira univerzálisan felhasználható mint pl c#-ban egy osztály
 
-Fő komponens: app, ezen belül van egy parent komponens és a parentben van egy child komponens, és azt szerentnénk hogy a parent-ben van egy tömbünk és a childnak át akarjuk adni ezt a tömböt.
 
 ### @Input - @Output:
-Input: A child komponensbe bele tudunk olyan elemeket rakni amik a parent komponenesben találhatóak meg.
+__Input:__ Amikor a parent komponensbe belerakjok a child komponenst, akkor a child komponensbe bele tudunk olyan elemeket rakni amik a parent komponenesben találhatóak meg.
 
-Output: A child komponensben van egy gomb de azt szeretnémhogy a parent komponsensen történjen valami, és egy ottani függvény fusson le.
+__Output:__ A child komponensben van egy gomb de azt szeretnémhogy a parent komponsensen történjen valami, és egy ottani függvény fusson le.
 
 ---
 `MyObject class`:
