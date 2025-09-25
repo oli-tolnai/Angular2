@@ -82,11 +82,18 @@ export class AppComponent {
 Összességében ha lehet, inkább `I/O`-t használjunk, ugyanis az átláthatóbb, és professzionálisabb. A `viewchild` használata során könnyebben alakulhat ki káosz.
 
 
+
+
+
+
+
+
 ## TANANYAG: Content-projection
 
 **Content-projection** egy harmadik mód lesz a komponensek közötti kommunikációra, az eddig tanult I/O és viewchild-on kívül. <br>
 Ennek az a lényege, hogy pl a `card` komponensen belül van egy olyan hogy `ng-content`, ami azért speciális mert van benne egy selector, ami abba a komponensbe fog föl referálni ahol meghívjuk ezt a komponenst, tehát a példánkban most az app komponsensbe.
 
+_Azért ez a neve, mert a tartalom fönt van definiálva és az bele van projektálva a lentebbi részbe_
 
 A **Content-projection** sablon építésre lesz jó, és a fókusz most főleg a `html`-en és a `css`-en lesz.
 
@@ -103,8 +110,6 @@ A **Content-projection** sablon építésre lesz jó, és a fókusz most főleg 
 
 > A `ng-content` egy speciális Angular direktíva, amely lehetővé teszi a tartalom beillesztését egy komponens sablonjába. Ez a direktíva helyőrzőként működik, amelybe a szülő komponensből származó tartalom kerül beillesztésre. A `select` attribútum segítségével meghatározhatjuk, hogy mely elemek kerüljenek beillesztésre az adott helyőrzőbe.
 
-> az ng-contentben a select, azt mutatja meg hogy a másik komponsensben aminek ez a neve, az ott lévő tartalom legyen ide átvéve. Tehát nem maga az egész tag kerül át.
-Azért ez a neve, mert a tartalom fönt van definiálva és az bele van projektálva a lentebbi részbe
 
 <br>
 
@@ -146,7 +151,7 @@ export class Movie {
 > Ez egy egyszerű TypeScript osztály, amely egy filmet reprezentál három tulajdonsággal: `title`, `year` és `intro`. 
 
 
-Most a card komponenst beillesztjük az app komponensbe és létrehozunk egy movie listát amit feltöltünk pár filmmel:
+<br>
 
 `app.component.ts:`
 ```ts app.component.ts
@@ -167,6 +172,7 @@ export class AppComponent implements OnInit {
 > Egy `movies` nevű tömböt hozunk létre, ami `Movie` objektumokat tartalmaz. Az `ngOnInit()` életciklus metódusban feltöltjük a tömböt néhány példányosított `Movie` objektummal. `ngOnInit()` helyett konstruktort is használhatnánk.
 
 <br>
+A card komponenst beillesztjük az app komponensbe:
 
 `app.component.html:`
 ```html app.component.html
@@ -187,9 +193,15 @@ export class AppComponent implements OnInit {
 > Itt a `*ngFor` direktívával iterálunk a `movies` tömb elemein, és minden egyes filmhez létrehozunk egy `app-card` komponenst. A `div` elemekben a `title`, `year`, és `intro` attribútumokat használjuk, hogy a megfelelő tartalmat átadjuk a `card` komponensnek a `ng-content` segítségével. Az `*ngIf` direktíva pedig feltételesen jelenít meg egy csillagot, ha a film éve nagyobb, mint 2010.
 
 
-> Content-projection fontos része még, hogy nem csak így tudunk átadni dolgokat hanem tudunk extrázni, pl a title-nél meg tudjuk azt csinálni. hogy nem csak nyersen a tartalmat adhatjuk át, hanem stílust is, mert mindent át ad ami a selectoros div-en belül van.
-tehát a div-en belül ha még adunk neki félkövéret, dölt stílust stb. akkor azok is mind átkerülnek.
-Teljes html kódokat bele lehet projektálni nem csak a tartalmat.
+> Content-projection fontos része még, hogy nem csak egyszerűen tudunk átadni dolgokat hanem tudunk extrázni, pl a title-nél meg tudjuk azt csinálni. hogy nem csak nyersen a tartalmat adhatjuk át, hanem stílust is, mert mindent át ad ami a selectoros div-en belül van.
+Tehát a div-en belül ha még adunk neki félkövéret, dölt stílust stb. akkor azok is mind átkerülnek.
+<br> **Teljes html kódokat bele lehet projektálni nem csak a tartalmat.**
+
+
+
+
+
+
 
 
 ## TANANYAG: templateRef és viewcontainerRef
