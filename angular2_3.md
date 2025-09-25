@@ -9,17 +9,77 @@
 **1.) I/O komponens** <br>
 Előző órán tanultuk az `I/O`-t a komponenseknél. Ahol például az `@Input` használatánál a szülő komponens csak annyit tud, hogy van  egy változó a gyermek komponensben aminek át tud adni értéket. Tehát az A komponens ad valamit a B komponensnek, de az A nem tudja hogy a B mit fog azzal csinálni, és a B komponens sem tudja hogy az A komponens mire való és mit csinál.
 
+![angular2_3_InputOutput](https://github.com/oli-tolnai/Angular2/blob/main/kepek/angular2_3_InputOutput.png)
+
 **2.) viewchild** <br>
 Másik módszer a `viewchild` használata. Itt a szülő komponens teljes rálátást kap a gyermek komponensre.  
 Teháát az A komponens teljes mértékben eléri a B-t (körülölei)
 
+![`angular2_3_viewchild`](https://github.com/oli-tolnai/Angular2/blob/main/kepek/angular2_3_viewchild.png)
+
+Ennek bemutatásához készítünk egy card komponenst, amit `"template"`-ként tudunk majd használni.
+
+<br>
+
+`ts card.component.ts:`
+```ts card.component.ts
+export class CardComponent {
+
+  message: string = "Lorem ipsum dolor sit amet"
+  secret: string = "valami titkos üzenet"
+
+  changeMessage(): void {
+    this.message = "**NEW CONTENT**"
+  }
+}
+```
+<br>
+
+`html card.component.html:`
+```html card.component.html
+<p>{{message}}</p>  
+```
+
+>Létrehoztuk a card komponenst, ami kiír egy üzenetet ami a `message` változóban van. A `secret` változót csak azért hoztuk létre, hogy lássuk, hogy a szülő komponenst azt is eléri majd. Emellett egy `changeMessage()` metódust is csináltunk ami megváltoztatja az üzenet tartalmát  
+---
+<br>
+
+> Alábbi példakód a **template reference** változók és a **@ViewChild dekorátor** használatát mutatja be, amelyek lehetővé teszik a szülő komponens és gyermek komponens közötti közvetlen kommunikációt.
 
 
-> Tehát ehhez `@viewchild`-ot kell használni és behivatkozunk ezzel egy másik komponenst, ott annak a komponensnek elérem *mindenét*. 
+`ts app.component.ts:`
+```ts app.component.ts
+export class AppComponent {
+  
+  @ViewChild("card") cardComp !: CardComponent
+
+  update(): void {
+    console.log(this.cardComp.secret)
+    this.cardComp.changeMessage()
+  }
+```
+>A TypeScript fájlban a `@ViewChild("card")` dekorátor egy hivatkozást hoz létre a gyermek komponens példányára. A dekorátor paraméterként a `"card"` stringet kapja, ami megfelel a HTML sablonban definiált `#card` template reference változónak. A `cardComp` tulajdonság fogja tárolni a tényleges `CardComponent` példány hivatkozását, miután az Angular inicializálta azt.
+
+>Az `update()` metódus bemutatja a közvetlen szülő-gyermek kommunikációt azáltal, hogy hozzáfér a gyermek komponens tulajdonságaihoz és metódusaihoz. Kiírja a gyermek komponens `secret `tulajdonságát a konzolra, és meghívja a gyermek `changeMessage()`metódusát. Ez demonstrálja, hogy a `@ViewChild` hogyan teszi lehetővé a szülő számára, hogy programozottan interakcióba lépjen a gyermek komponenssel.
+
+<br>
+
+`html app.component.html:`
+```html app.component.html
+<h1>App component</h1>
+
+<button (click)="update()">Update</button>
+
+<app-card #card></app-card>
+```
+
+>A HTML sablonban a `<app-card #card></app-card>` elem létrehozza a gyermek komponenst és hozzárendeli a `#card` template reference változót. Ez a referencia változó az, ami összeköti a gyermek komponens példányát a TypeScript kódban lévő `@ViewChild` dekorátorral. A gomb click eseménye az update() metódushoz van kötve, így interaktív módon lehet kiváltani a szülő-gyermek kommunikációt.
+
+ 
 
 **Kérdés**: <br>
 *Melyiket érdemes használni? Az `I/O` vagy a `viewchild` a jobb?* <br>
-Összességében ha lehet, inkább `I/O`-t használjunk, ugyanis az átláthatóbb, és professzionálisabb. A `viewchild` használata során, könnyebben káosz alakulhat ki.
+Összességében ha lehet, inkább `I/O`-t használjunk, ugyanis az átláthatóbb, és professzionálisabb. A `viewchild` használata során könnyebben alakulhat ki káosz.
 
 
 
