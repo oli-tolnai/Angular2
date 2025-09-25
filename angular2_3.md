@@ -764,7 +764,18 @@ export class AuthService {
 
 ---
 
-
+### Lépések összefoglalva:
+1. Csinálunk egy külön servicet-t ahhoz hogy kezeljük a bejelentkezést: login metódus. És ezt a metódust meghívjuk a login kompononsben.
+2. A username és password-ot valahol tárolnunk is kell, ezért csinálunk egy loginModel osztályt, amiben tároljuk ezt a két változót.
+3. A következő lépés a backend meghívása. amihez az api.siposm-et használjuk. A service-ben most lekódoljuk a login methódust. És a megkapott tokent localstoreage-ben eltároljuk.
+4. Post után <>-ilyenbe fel tudjuk készíteni hogy milyen választ várunk.
+5. Csinálunk environmentset is amibe kirakjuk az apit ha már tanultunk ilyet. A tokent is kirakjuk ide egy környezeti változóba.
+6. Most megnézzük a logout. Annyira gyorsan lefut hogy fölösleges egy komponens, de a itt csinálunk több dolgot, pl megnézi nincs e folyamatba valami és felugrik egy ablak hogy biztos ki akarsz a lépni. Logout igazából csak egyetlen metódus hívás ezért fölösleges külön komponenes neki.
+7. Azt is meg kell oldanunk, hogy ha nem vagyunk belépve akkor a logint lássuk ha pedig be vagyunk lépve akkor logout-ot lássuk. Ezt az auth service-ben nézzük, amiben a localstorage-ban megnézzük hogy üres e a tokenünk és ngIf-vel döntjük el hogy melyik jelenjen meg.
+8. Csinálunk egy auth guardot ami megvédi a routingot. Ezt a routing modulban tudjuk megtenni a canActivate-vel. Itt most egy egyszerű logikát használunk, hogy megnézzük van e token a localstorage-ben és ha van akkor engedélyezzük a routingot. Ez egy egyszerűbb megoldás, de lehetne bonyolultabb is pl ellenőrizhetnénk a tokent hogy lejárt e stb.
+9. Két részre kell bontani hogy rooting alapján elérem e és azt is hogy látom e.  A canActivate neve: "auth Guard"
+10. Végül pedig a routing védelmét nézzük meg. Ezt a routing modulban tudjuk megtenni a canActivate-vel. Itt most egy egyszerű logikát használunk, hogy megnézzük van e token a localstorage-ben és ha van akkor engedélyezzük a routingot. Ez egy egyszerűbb megoldás, de lehetne bonyolultabb is pl ellenőrizhetnéka tokent hogy lejárt e stb.
+---
 
 
 
