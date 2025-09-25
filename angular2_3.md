@@ -88,7 +88,7 @@ export class AppComponent {
 
 
 
-## TANANYAG: Content-projection
+## TANANYAG: [Content-projection](https://github.com/siposm/bprof-frontend-weekly/tree/master/angular/content-projection)
 
 **Content-projection** egy harmadik mód lesz a komponensek közötti kommunikációra, az eddig tanult I/O és viewchild-on kívül. <br>
 Ennek az a lényege, hogy pl a `card` komponensen belül van egy olyan hogy `ng-content`, ami azért speciális mert van benne egy selector, ami abba a komponensbe fog föl referálni ahol meghívjuk ezt a komponenst, tehát a példánkban most az app komponsensbe.
@@ -220,21 +220,28 @@ A **ViewContainerRef** ezzel szemben egy tárolót jelent, ahol egy vagy több n
 
 
 
-## TANANYAG: életciklusok lifecycle
-ezeket interfészeken keresztül tudjok elérni.
+## TANANYAG: [Életciklusok `lifecycle`](https://github.com/siposm/bprof-frontend-weekly/tree/master/angular/lifecycles)
 
-implements Oninit -> ez egy interfészen keresztül implementálható
+> Az életciklusok azok a pontok egy komponens életében, amikor az Angular értesíti a komponenst, hogy valami fontos dolog történt vele. Ezeket úgy kell elképzelni, mint eseményeket vagy állapotváltozásokat, amelyek során a komponens különböző metódusokat hív meg.
 
-amikor seed adatokat akartunk eddig csinálni akkor contruktort használtunk de sokkal jobb helyük van az ngOnInit(): void-van
-`ide kell a kód, ahol a konstruktor helyett ngOnInitbe rakjuk a seed movie adatokat`
+**Az életciklusokat és a hozzájuk tartozó metódusokat interfészeken keresztül tudjok elérni.**
 
-az életciklosokról azt kell tudni hogy 
 
-van itt ilyen ábra [angular lifecycle](https://angular.dev/guide/components/lifecycle), de sipos készítette a repoba  egy magyar változatot, a https://github.com/siposm/bprof-frontend-weekly/blob/master/angular/materials/lifecycles.md
+Eddig mikor seed adatokat akartunk létrehozni akkor konstruktort használtunk, de sokkal jobb helyük van az `ngOnInit()`-ben. 
 
-ez is egy jó kép: https://codecraft.tv/courses/angular/components/lifecycle-hooks/images/lifecycle-hooks.png
+Az alábbi honlapon megtalálhatóak milyen életciklusok vannak: [angular lifecycle](https://angular.dev/guide/components/lifecycle).
+Azonban itt van a magyarra lefordított változat is: 
 
-a constructor nem egy hook mint a többi. 
+![lifecycle magyar](https://angular.hu/guide/lifecycle-hooks)
+
+_Az `ngOnInit`-et lehetne a creationbe is rakni, de a changedetectionbe van._
+
+Az alábbi képen azt is láthatjuk hogy milyen sorrendben futnak le ezek az életciklusok:
+![lifecycle sorrend](https://angular.hu/assets/images/lifecycle-hooks.png)
+
+
+*A constructor nem egy hook mint a többi.*
+
 
 Ezek azokat amiket megnézünk és fontos tudni: 
 
