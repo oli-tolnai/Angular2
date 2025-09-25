@@ -84,27 +84,113 @@ export class AppComponent {
 
 ## TANANYAG: Content-projection
 
-ng g c card - csinálunk egy kártyy komponesnt
+**Content-projection** egy harmadik mód lesz a komponensek közötti kommunikációra, az eddig tanult I/O és viewchild-on kívül. <br>
+Ennek az a lényege, hogy pl a `card` komponensen belül van egy olyan hogy `ng-content`, ami azért speciális mert van benne egy selector, ami abba a komponensbe fog föl referálni ahol meghívjuk ezt a komponenst, tehát a példánkban most az app komponsensbe.
 
-Content-projection sablon építésre lesz jó. A fókuszon most főleg a html-en és a css-en lesz amikor sablonokat akarunk csinálni.
 
-app-komponensben meghívjuk a card komponenst
+A **Content-projection** sablon építésre lesz jó, és a fókusz most főleg a `html`-en és a `css`-en lesz.
 
-csinálunk egy movie osztályt, amibe belerakunk pár dolgot: title, year, intro, contstructorral
+<br>
 
-app komponensbe ami tekinthető szülőnek. Ott egy listába belerakunk pár Movie elemet.
+`card.component.html:`
+```html card.component.html
+<div>
+    <h1><ng-content select="[title]"></ng-content></h1>
+    <h5><ng-content select="[year]"></ng-content></h5>
+    <p><ng-content select="[intro]"></ng-content></p>
+</div>
+```
 
-ezután app komponensen belül hogyan tudnánk a card-ban megjeleníteni? Content-projection egy harmadik mód lesz az eddig tanult I/O és viewchield-on kíbül
-Ennek az a lényege, hogy a card komponensen belül van egy olyan hogy ng-content. ami azért speciális mert benne a selector oda fog föl referálni ahol meghívjuk ezt a komponenst tehát most az app komponsensbe
+> A `ng-content` egy speciális Angular direktíva, amely lehetővé teszi a tartalom beillesztését egy komponens sablonjába. Ez a direktíva helyőrzőként működik, amelybe a szülő komponensből származó tartalom kerül beillesztésre. A `select` attribútum segítségével meghatározhatjuk, hogy mely elemek kerüljenek beillesztésre az adott helyőrzőbe.
 
-az ng-contentben a select, azt mutatja meg hogy a másik komponsensben aminek ez a neve, az ott lévő tartalom legyen ide átvéve. Tehát nem maga az egész tag kerül át.
+> az ng-contentben a select, azt mutatja meg hogy a másik komponsensben aminek ez a neve, az ott lévő tartalom legyen ide átvéve. Tehát nem maga az egész tag kerül át.
 Azért ez a neve, mert a tartalom fönt van definiálva és az bele van projektálva a lentebbi részbe
- 
-margin: 0 auto középre igazít és mindent felül ír, utána külön meg kell adni pl a margin-buttom.
 
-Content-projection fontos része még, hogy nem csak így tudunk átadni dolgokat hanem tudunk extrázni, pl a title-nél meg tudjuk azt csinálni. hogy nem csak nyersen a tartalmat adhatjuk át, hanem stílust is, mert mindent át ad ami a selectoros div-en belül van.
+<br>
+
+`card.component.sass:`
+```css card.component.sass
+div
+    width: 300px
+    border: 5px solid red
+    border-radius: 10px
+    padding: 10px 30px
+    margin: 0 auto
+    margin-bottom: 5px
+    text-align: center
+```
+
+> A `card.component.sass` fájlban a stílusokat definiáljuk a card komponens számára. A `div` elemre vonatkozó stílusok meghatározzák a szélességet, a keretet, a lekerekített sarkokat, a belső és külső margókat, valamint a szöveg igazítását. A `margin: 0 auto` középre igazítja a komponenst vízszintesen, emellett minden margint felülír, ezért külön meg kell adni a `margin-bottom` értékét is.
+
+---
+
+
+Csinálunk egy movie osztályt is:
+<br>
+
+`movie.ts:`
+```ts movie.ts
+export class Movie {
+    title: string = ""
+    year: number = 0
+    intro: string = ""
+
+    constructor(title: string = "", year: number = 0, intro: string = "") {
+        this.title = title
+        this.year = year
+        this.intro = intro
+    }
+}
+```
+
+> Ez egy egyszerű TypeScript osztály, amely egy filmet reprezentál három tulajdonsággal: `title`, `year` és `intro`. 
+
+
+Most a card komponenst beillesztjük az app komponensbe és létrehozunk egy movie listát amit feltöltünk pár filmmel:
+
+`app.component.ts:`
+```ts app.component.ts
+export class AppComponent implements OnInit {
+  movies: Movie[] = []
+
+  ngOnInit(): void {
+    this.movies.push(
+      new Movie("The Matrix", 1999, "Lorem ipsum dolor sit amet..."),
+      new Movie("Inception", 2010, "Lorem ipsumamet..."),
+      new Movie("Interstellar", 2014, "Lorem ipsum dolor sit ipsum dolor sit ipsum dolor sit amet..."),
+      new Movie("The Dark Knight", 2008, "Lorem ipsum dolor ..."),
+    )
+  }
+}
+```
+
+> Egy `movies` nevű tömböt hozunk létre, ami `Movie` objektumokat tartalmaz. Az `ngOnInit()` életciklus metódusban feltöltjük a tömböt néhány példányosított `Movie` objektummal. `ngOnInit()` helyett konstruktort is használhatnánk.
+
+<br>
+
+`app.component.html:`
+```html app.component.html
+<app-card *ngFor="let item of movies">
+  <div title>
+    <u>
+      <i>
+        {{ item.title }}
+      </i>
+    </u>
+    <span *ngIf="item.year > 2010" style="background-color: aqua;">*</span>
+  </div>
+  <div year>{{item.year}}</div>
+  <div intro>{{item.intro}}</div>
+</app-card>
+```
+
+> Itt a `*ngFor` direktívával iterálunk a `movies` tömb elemein, és minden egyes filmhez létrehozunk egy `app-card` komponenst. A `div` elemekben a `title`, `year`, és `intro` attribútumokat használjuk, hogy a megfelelő tartalmat átadjuk a `card` komponensnek a `ng-content` segítségével. Az `*ngIf` direktíva pedig feltételesen jelenít meg egy csillagot, ha a film éve nagyobb, mint 2010.
+
+
+> Content-projection fontos része még, hogy nem csak így tudunk átadni dolgokat hanem tudunk extrázni, pl a title-nél meg tudjuk azt csinálni. hogy nem csak nyersen a tartalmat adhatjuk át, hanem stílust is, mert mindent át ad ami a selectoros div-en belül van.
 tehát a div-en belül ha még adunk neki félkövéret, dölt stílust stb. akkor azok is mind átkerülnek.
 Teljes html kódokat bele lehet projektálni nem csak a tartalmat.
+
 
 ## TANANYAG: templateRef és viewcontainerRef
 Ezt a két dolgot nem tanuljuk részletesebben, de igény szerint utána lehet nénzi.
@@ -114,6 +200,13 @@ A **TemplateRef** egy Angular template (sablon) hivatkozását jelenti - gyakorl
 A **ViewContainerRef** ezzel szemben egy tárolót jelent, ahol egy vagy több nézet csatolható. Gondolhatunk rá úgy, mint egy helyfoglalóra a DOM-ban, ahová az Angular dinamikusan beszúrhat, eltávolíthat vagy manipulálhat nézeteket.
 
 > Mind a TemplateRef, mind a ViewContainerRef a **@ViewChild dekorátort** használja a háttérben. Ez logikus, mivel a @ViewChild az Angular elsődleges mechanizmusa arra, hogy hivatkozásokat kapjunk template elemekre, komponensekre vagy direktívákra. Amikor dinamikusan szeretnénk manipulálni sablonokat vagy tárolókat, általában először @ViewChild segítségével kell rájuk hivatkozást szereznünk.
+
+
+
+
+
+
+
 
 ## TANANYAG: életciklusok lifecycle
 ezeket interfészeken keresztül tudjok elérni.
@@ -160,6 +253,10 @@ A servicek alapvetően singleton-ként jön létre. Tehát mindig ugyanazt az eg
 Először akkor jönnek létre, ahol/amior dependecy injectionnal megkapja egy komponenens.
 Így ezekután nem nagyon beszélhetünk életciklusokról.
 IOC `inversion of control` konténerek intézik a serviceket
+
+
+
+
 
 
 ## TANANYAG: Authetication
