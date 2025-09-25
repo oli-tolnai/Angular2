@@ -1,42 +1,24 @@
 # Angular2 3.hét 3.óra
 
-## TANANYAG: Viewchild
+## TANANYAG: [Viewchild](https://github.com/siposm/bprof-frontend-weekly/tree/master/angular/viewchild)
 
-Ismétlés: I/O komponens
-1. I/O komponens
-2. viewchield
- 
-1. az A ad valamit a B-nek de nem tudja hogy a B mit csinál. A B kap valamit az A-tól de a B nem tudja mit csinál az A
+**Folytatjuk azt a témát ahol azt nézzük át, hogyan tudnak komponensek kommunikálni, és adatokat átadni egymás között**
 
-2.) Ebben az esetben az A teljes mértékben eléri a B-t (körülöleli)
+**1.) I/O komponens** <br>
+Előző órán tanultuk az `I/O`-t a komponenseknél. Ahol például az `@Input` használatánál a szülő komponens csak annyit tud, hogy van  egy változó a gyermek komponensben aminek át tud adni értéket. Tehát az A komponens ad valamit a B komponensnek, de az A nem tudja hogy a B mit fog azzal csinálni, és a B komponens sem tudja hogy az A komponens mire való és mit csinál.
 
-Most mi az utóbbival az viewchild-dal fogunk foglalkozni
-
+**2.) viewchild** <br>
+Másik módszer a `viewchild` használata. Itt a szülő komponens teljes rálátást kap a gyermek komponensre.  
+Teháát az A komponens teljes mértékben eléri a B-t (körülölei)
 
 
-```ts app
- @ViewChilrd("card") cardComp !: CardComponent
-```
 
-```html app
-<app-card #card></app-card>
-```
+> Tehát ehhez `@viewchild`-ot kell használni és behivatkozunk ezzel egy másik komponenst, ott annak a komponensnek elérem *mindenét*. 
 
-```html card
-{{message}}
-```
+**Kérdés**: <br>
+*Melyiket érdemes használni? Az `I/O` vagy a `viewchild` a jobb?* <br>
+Összességében ha lehet, inkább `I/O`-t használjunk, ugyanis az átláthatóbb, és professzionálisabb. A `viewchild` használata során, könnyebben káosz alakulhat ki.
 
-```ts card
-message: string ="dfsdffsdfsdfds"
-
-changeMessage(): void {
-    this.message = "new content"
-}
-```
-
-Annyi hogy a viewchild-ot kell használni és ahol behivatkozunk ezzel egy másik komponenst, ott annak a komponensnek elérem mindenét. 
-Kérdés: melyiket kell használni? I/O vagy viewchild?
-Az I/O-t kell általában használni. Az sokkal átláthatóbb és a másik egy totális nagy káoszba tud kifulladni.
 
 
 
