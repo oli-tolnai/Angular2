@@ -4,6 +4,8 @@
 
 **Folytatjuk azt a témát ahol azt nézzük át, hogyan tudnak komponensek kommunikálni, és adatokat átadni egymás között**
 
+![angular2_3_1_uj.png](https://github.com/oli-tolnai/Angular2/blob/main/kepek/angular2_3_1_uj.png)
+
 **1.) I/O komponens** <br>
 Előző órán tanultuk az `I/O`-t a komponenseknél. Ahol például az `@Input` használatánál a szülő komponens csak annyit tud, hogy van  egy változó a gyermek komponensben aminek át tud adni értéket. Tehát az A komponens ad valamit a B komponensnek, de az A nem tudja hogy a B mit fog azzal csinálni, és a B komponens sem tudja hogy az A komponens mire való és mit csinál.
 
