@@ -232,47 +232,207 @@ Eddig mikor seed adatokat akartunk létrehozni akkor konstruktort használtunk, 
 Az alábbi honlapon megtalálhatóak milyen életciklusok vannak: [angular lifecycle](https://angular.dev/guide/components/lifecycle).
 Azonban itt van a magyarra lefordított változat is: 
 
-![lifecycle magyar](https://angular.hu/guide/lifecycle-hooks)
+# Lifecycle hooks
+
+| **Fázis** | **Metódus neve** | **Mikor fut le** | **Tipikus Példa** |
+| --- | --- | --- | --- |
+| **Creation** | `constructor` | Lefut, amikor Angular példányosítja a komponenst.  | Szolgáltatás injektálása, property-k alapértékre állítása.    |
+| **Change Detection** | `ngOnInit`   | Egyszer fut le, miután az összes input inicializálva lett.   | Kezdeti adatbetöltés, API-hívás indítása, form alapállapotának felépítése, egyszeri inicializálás.    |
+|  | `ngOnChanges` | Minden alkalommal lefut, amikor egy `@Input` értéke megváltozik (az első beállításkor is). | Input alapján belső állapot frissítése (pl. számított mező kiszámítása, log transform).   |
+|  | `ngDoCheck`  | Minden change detection ciklusban lefut.   | Saját, optimalizált változásdetektáló logika írása (pl. nagy listák diffelése, teljesítmény-optimalizáció).  |
+|  | `ngAfterContentInit`  | Egyszer fut, miután a projectált tartalom (`<ng-content>`) inicializálva lett.| Ellenőrzés, hogy a kötelező projected content tényleg bekerült-e (pl. slot-validáció).   |
+|  | `ngAfterContentChecked` | Minden content change detection után lefut.  | Projectált tartalom figyelése, amikor belső logikát kell futtatni content-változáskor.   |
+|  | `ngAfterViewInit`    | Egyszer fut, miután a komponens nézete és a gyerek komponensek nézete inicializálódott.  | DOM-méretek lekérése, 3rd-party UI lib inicializálása, `@ViewChild` komponens meghívása.  |
+|  | `ngAfterViewChecked`  | Minden view change detection után lefut.   | Layout finomhangolása, animáció elindítása a DOM végleges állapota után. (Óvatosan használni, nehogy végtelen ciklust okozzon!) |
+| **Rendering**    | `afterNextRender`    | Egyszer fut, amikor a teljes DOM render befejeződött. | Egyedi mérés vagy animáció, amihez a teljes oldalt készen kell látni (pl. scroll pozíció beállítása).|
+|  | `afterEveryRender`   | Minden DOM render után lefut.    | Globális UI-szinkron (pl. sticky header pozíció frissítése minden render után).  |
+| **Destruction**   | `ngOnDestroy` | Egyszer fut, mielőtt a komponens megsemmisül. | Subscribek leiratása, interval/timeouts leállítása, DOM események leválasztása.  |
 
 _Az `ngOnInit`-et lehetne a creationbe is rakni, de a changedetectionbe van._
 
-Az alábbi képen azt is láthatjuk hogy milyen sorrendben futnak le ezek az életciklusok:
-![lifecycle sorrend](https://angular.hu/assets/images/lifecycle-hooks.png)
+Az alábbi képen azt is láthatjuk hogy milyen sorrendben futnak le:
+![lifecycle sorrend](https://github.com/oli-tolnai/Angular2/blob/main/kepek/angular2_3_lifecycle-hooks.png)
 
 
-*A constructor nem egy hook mint a többi.*
+*Alapvetően a constructor nem egy hook mint a többi.*
 
 
-Ezek azokat amiket megnézünk és fontos tudni: 
+---
+### Most megnézünk párat, amiket fontos tudni.
 
-Az ngOnInit-et lehetne a creationbe is rakni, de a changedetectionbe van
+Ehhez 3 komponenst készítünk: A, B és child és még egy stringContent classt is.
 
-### megnézünk ebből jópárat. 3 komponenssel: A, B és child és még egy stringContent class
+> *Fontos most megemlíteni, de később majd részletezzük hogy a lifecycle-ben, hogy az ngFor-nak más a viselkedése, hogy ha objektumon hívjuk meg mintha csak egy primitív típuson hívnánk meg. Éppen ezért mi most készíteni fogunk egy `string-content` osztályt*
 
-ami még fontos a lifecycle-ban és kicsit később beszélünk róla az ngFor és a objektum vs primitív típus
+<br>
 
-stringContent-ben: content:string létrehozása
-app-routingba egy path-ot megadunk: compa -> componensA; compb -> componensB
+`string-content.ts:`
+```ts string-content.ts
+export class StringContent {
+    content: string = ""
+    constructor(content: string = "") {
+        this.content = content
+    }
+}
+```
 
-app-component html-be megyünk kövenk létrehozunk kettő gombot ami routerlinkes és beszúrjuk a router-outletet
+<br>
 
-ezután az A kompones ts-fájlba: contructor és ngOnInit létrehozása és az OnDestroy-t is létrehozzuk. 
+app-routingba megyünk és beállítjuk a routingot hogy az A és B komponens között tudjunk váltani
 
-most ezeket leteszteljük és megnézzük mit ír ki a console.
+`app-routing.module.ts:`
+```ts app-routing.module.ts
+const routes: Routes = [
+  { path: "compa", component: ComponentAComponent },
+  { path: "compb", component: ComponentBComponent },
+];
+```
 
-Most ezeket még kiegészítjük a child komponenssel. amit a b komponensebe belerakunk, majd a b komponens ts-fájlában kicsit dolgozunk
-A childnak adunk két @Input-ot, content és message, majd a B komponensbe hozzá adjuk ezeket.
+<br>
 
-Érdekesség, hogy ha  ngforral rakosgassuk ki és primitív típussal dolgozunk akkor az ngfor a gyerek kmoponenst kiveszi azaz lefut a ondestroy is és újra lerakja és lefut a constructor, onchanges és oninit is újra a gyerek komponensben
+app-component html-be megyünk, létrehozunk kettő gombot ami routerlinkes és beszúrjuk a router-outletet
 
 
-**service**
-Ezek az életciklusok a komponensekre vonatkozik. A service-kről még nem beszéltünk nem is véletlen. Azoknak egyszerű az életciklusuk.
-A servicek alapvetően singleton-ként jön létre. Tehát mindig ugyanazt az egy példányt kapjuk vissza. Ha van egy service-em és 8 komponens használja akkor nem jön létre újra és újra a service. Ez átállítható hogy ne singleton legyen de az ritka.
-Először akkor jönnek létre, ahol/amior dependecy injectionnal megkapja egy komponenens.
+`app.component.html:`
+```html app.component.html
+<h1>Main app component</h1>
+<hr>
+<button routerLink="compa">Component A</button>
+<button routerLink="compb">Component B</button>
+<hr>
+<router-outlet></router-outlet>
+```
+
+<br>
+
+### Ezután elkészítjük az A komponest
+
+`component-a.component.ts:`
+```ts component-a.component.ts
+export class ComponentAComponent implements OnInit, OnDestroy {
+  constructor() {
+    console.log("Comp A constructor runs")
+  }
+
+  ngOnDestroy(): void {
+    console.log("Comp A OnDestroy runs")
+  }
+  
+  ngOnInit(): void {
+    console.log("Comp A OnInit runs")
+  }
+}
+```
+
+> Itt az `OnInit` és `OnDestroy` interfészeket implementáljuk, hogy használhassuk az `ngOnInit()` és `ngOnDestroy()` életciklus metódusokat. A konstruktorban, valamint az `ngOnInit()` és `ngOnDestroy()` metódusokban konzol üzeneteket írunk ki, hogy lássuk, mikor futnak le ezek a metódusok a komponens életciklusa során.
+
+<br>
+
+`component-a.component.html:`
+```html component-a.component.html
+<div>
+    <h4>Component A</h4>
+</div>
+```
+
+---
+### Elkészítjük a B komponenst is:
+`component-b.component.ts:`
+```ts component-b.component.ts
+export class ComponentBComponent {
+  contents: StringContent[] = []
+  message: string = "This is my welcome message"
+
+  constructor() {
+    console.log("Component B constructor runs")
+    this.contents.push(new StringContent("Lorem ipsum"))
+    this.contents.push(new StringContent("Dolor sit"))
+    this.contents.push(new StringContent("Amet ipsum dolor"))
+  }
+
+  changeItem(): void {
+    this.message = this.message.replace("welcome", "goodbye")
+  }
+}
+```
+
+> Itt a `ComponentBComponent` osztályban egy `contents` nevű tömböt hozunk létre, ami `StringContent` objektumokat tartalmaz. A konstruktorban feltöltjük ezt a tömböt néhány példányosított `StringContent` objektummal, és egy `message` változót is definiálunk, ami egy üzenetet tárol. Emellett van egy `changeItem()` metódusunk, ami megváltoztatja az üzenet tartalmát.
+
+<br>
+
+`component-b.component.html:`
+```html component-b.component.html
+<div>
+    <h4>Component B</h4>
+    <button (click)="changeItem()">Change message</button>
+    <app-child *ngFor="let item of contents"
+        [content]="item"
+        [message]="message"
+    ></app-child>
+</div>
+```
+
+> A HTML sablonban egy gombot hozunk létre, ami a `changeItem()` metódust hívja meg kattintásra. Emellett egy `ngFor` direktívát használunk, hogy iteráljunk a `contents` tömb elemein, és minden egyes elemhez létrehozunk egy `app-child` komponenst. Az `app-child` komponensnek átadjuk a `content` és `message` változókat inputként.
+
+---
+
+### Végül elkészítjük a child komponenst is:
+
+`child.component.ts:`
+```ts child.component.ts
+export class ChildComponent implements OnChanges {
+  @Input() content: StringContent = new StringContent()
+  @Input() message: string = ""
+
+  constructor() {
+    console.log("Child constructor runs")
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("Child OnChanges runs")
+  }
+}
+```
+
+> Itt a `ChildComponent` osztályban két `@Input` dekorátorral ellátott változót definiálunk: `content`, ami egy `StringContent` objektum, és `message`, ami egy string. A konstruktorban és az `ngOnChanges()` metódusban konzol üzeneteket írunk ki, hogy lássuk, mikor futnak le ezek a metódusok a komponens életciklusa során. Az `ngOnChanges()` metódus akkor fut le, amikor bármelyik input változó értéke megváltozik.
+
+<br>
+
+`child.component.html:`
+```html child.component.html
+<div>
+    <h4>{{ message }}</h4>
+    <p>{{ content.content }}</p>
+</div>
+```
+
+<br>
+
+**Összefoglalva a projekt működése:**
+- Az app komponensben két gomb van, amik az A és B komponensek között váltanak.
+- Az A komponens csak egy egyszerű üzenetet jelenít meg, és az életciklus metódusokat használja, hogy lássuk mikor jön létre és mikor semmisül meg.
+- A B komponens egy gombot és egy listát jelenít meg, ahol a listában child komponensek vannak.
+- A child komponens két inputot kap a B komponenstől: egy `StringContent` objektumot és egy üzenetet.
+- A child komponens az `OnChanges` életciklus metódust használja, hogy lássuk mikor változnak meg az inputok.
+
+
+**Érdekesség**, hogy ha `ngfor`-ral rakosgassuk ki az elemeket és primitív típussal dolgozunk, akkor az ngfor a gyerek kmoponenst kiveszi (eltünteti) azaz lefut a ondestroy is és újra lerakja és lefut a constructor, onchanges és oninit is újra a gyerek komponensben. Azonban ha objektumon hívjuk meg akkor csak az onchanges és oninit fut le újra, a constructor és ondestroy nem. Ez azért van mert az ngfor látja hogy ugyanaz az objektum így nem veszi ki a gyerek komponenst csak frissíti az értékét. Ezért csináltuk meg a stringcontent osztályt. Primitív típusnál ez nem így van mert az egy érték típus és az ngfor nem látja hogy ugyanaz az érték így kiveszi és újra beteszi a gyerek komponenst.
+
+
+
+### Servicek életciklusa
+Eddig csak a komponensek életciklusáról beszéltünk és a service-kről még nem beszéltünk nem is véletlen. A service-knek egyszerű az életciklusuk.
+
+A servicek alapvetően `singleton`-ként jönnek létre. Tehát mindig ugyanazt az egy példányt kapjuk vissza. Ha van egy service-em és 8 komponens használja akkor nem jön létre újra és újra a service. *Ez átállítható hogy ne singleton legyen de az ritka, hogy ilyen kelljen nekünk.*
+
+A servicek először akkor jönnek létre, ahol/amior dependecy injectionnal megkapja egy komponenens.<br>
 Így ezekután nem nagyon beszélhetünk életciklusokról.
-IOC `inversion of control` konténerek intézik a serviceket
 
+
+A servicek életciklusát az IOC konténerek kezelik.<br>
+`IOC` = `inversion of control` 
+<br>
+Ez azt jelenti hogy a servicek életciklusát nem mi kezeljük hanem az IOC konténer. Az IOC konténer egy olyan hely ahol a servicek létre jönnek és megsemmisülnek. Az IOC konténer feladata hogy létrehozza a serviceket és megsemmisítse őket amikor már nincs rájuk szükség.
 
 
 
