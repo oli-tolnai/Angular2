@@ -82,8 +82,6 @@ export class AppComponent {
 Összességében ha lehet, inkább `I/O`-t használjunk, ugyanis az átláthatóbb, és professzionálisabb. A `viewchild` használata során könnyebben alakulhat ki káosz.
 
 
-
-
 ## TANANYAG: Content-projection
 
 ng g c card - csinálunk egy kártyy komponesnt
@@ -109,8 +107,13 @@ tehát a div-en belül ha még adunk neki félkövéret, dölt stílust stb. akk
 Teljes html kódokat bele lehet projektálni nem csak a tartalmat.
 
 ## TANANYAG: templateRef és viewcontainerRef
-kettő dolog amit a content projetcionhoz csatlakozik de nem fogjuk külön venni ezeket
-Ez a kettő dolog mindenkettő viewchild-ot használ, ez az érdekes benne.
+Ezt a két dolgot nem tanuljuk részletesebben, de igény szerint utána lehet nénzi.
+
+A **TemplateRef** egy Angular template (sablon) hivatkozását jelenti - gyakorlatilag egy tervrajzot, amiből nézetek (view-k) hozhatók létre. Ez egy beágyazott sablon, ami többször példányosítható különböző view példányok létrehozására.
+
+A **ViewContainerRef** ezzel szemben egy tárolót jelent, ahol egy vagy több nézet csatolható. Gondolhatunk rá úgy, mint egy helyfoglalóra a DOM-ban, ahová az Angular dinamikusan beszúrhat, eltávolíthat vagy manipulálhat nézeteket.
+
+> Mind a TemplateRef, mind a ViewContainerRef a **@ViewChild dekorátort** használja a háttérben. Ez logikus, mivel a @ViewChild az Angular elsődleges mechanizmusa arra, hogy hivatkozásokat kapjunk template elemekre, komponensekre vagy direktívákra. Amikor dinamikusan szeretnénk manipulálni sablonokat vagy tárolókat, általában először @ViewChild segítségével kell rájuk hivatkozást szereznünk.
 
 ## TANANYAG: életciklusok lifecycle
 ezeket interfészeken keresztül tudjok elérni.
