@@ -440,55 +440,338 @@ Ez azt jelenti hogy a servicek életciklusát nem mi kezeljük hanem az IOC kont
 
 ## TANANYAG: Authetication
 
-Backenden olyan volt ez, hogy voltak api végpontok és voltak ahol voltak lakatok, amit csak bejelentkezett felhasználk tudták használni. Frontend küld pl egy login api hívást, a backend leellenőrzte, hogy beléphet e, ha igen akkor visszaküld egy tokent (pl jwt). Tehát a frontend megkapja a tokent, el kell tárolnunk és utána tudjuk meghívni a többi api-t
 
-Ehhez kell most nekünk egy login és logout komponens, utóbbi elhagyható.
-Kell még demoCompA és demoCompB komponensek.
+Backenden olyan volt ez, hogy voltak api végpontok és voltak ahol voltak lakatok, amit csak bejelentkezett felhasználk tudták használni.
+<br>Frontend küld pl egy login api hívást, a backend leellenőrzte, hogy beléphet e, ha igen akkor visszaküld egy tokent (pl jwt).
 
-Routingot is összerakjuk.
+A feladatunk az tehát hogy a frontend megkapja a tokent, és azt el kell tárolnunk és utána tudjuk meghívni a többi api-t, amihez már kell a token.
 
-logout igazából csak egyetlen metódus hívás ezért fölösleges külön komponenes neki.
+![authentication](https://github.com/oli-tolnai/Angular2/blob/main/kepek/angular2_3_3auth_uj.png)
 
-csinálunk egy külön servicet-t ahhooz hogy kezeljük a bejelentkezést: login metódus. És ezt a metódust meghívjuk a login kompononsben.
+A projektünkhoz fog kelleni egy login és logout komponens (utóbbi elhagyható) és kell még demoCompA és demoCompB komponensek. És persze az app component is kell.
 
-A username és password-ot valahol tárolnunk is kell, ezért csinálunk egy loginModel osztályt, amiben tároljuk ezt a két változót.
-És ezt a loginModelt példányosítani tudjuk a login komponensben és utána NgModellel összekötjük.és a gombnyomásra átadjuk a service-nek a loginmodel példánynkat.
+<br>
 
-A következő lépés a backend meghívása. amihez az api.siposm-et használjuk
-A service-ben most lekódoljuk a login methódust. És a megkapott tokent localstoreage-ben eltároljuk
-
-post után <>-ilyenbe fel tudjuk készíteni hogy milyen választ várunk.
-ehhez létrehozunk egy AuthToken class-t. EZ akkor fontos ha több infót is kapunk pl mikor jár le és nem csak egy stringet kapunk.
-
-csinálunk environmentset is amibe kirakjuk az apit ha már tanultunk ilyet. A tokent is kirakjuk ide egy környezeti változóba.
+### *A lépések be vannak számozva. Ezek mentén haladj, ha olvasod a jegyzetet.*
 
 
-Most megnézzük a logout. Annyira gyorsan lefut hogy fölösleges egy komponens, de a itt csinálunk több dolgot, pl megnézi nincs e folyamatba valami és felugrik egy ablak hogy biztos ki akarsz a lépni. 
+**2.)** A username és password-ot valahol tárolnunk is kell, ezért csinálunk egy loginModel osztályt, amiben tároljuk ezt a két változót.
+És ezt a loginModelt példányosítani tudjuk a login komponensben és utána NgModellel összekötjük, és a gombnyomásra átadjuk a service-nek a loginmodel példányunkat.
+
+
+`login.model.ts:`
+```ts login.model.ts
+export class LoginModel {
+    username: string = ""
+    password: string = ""
+}
+```
+
+<br>
+
+>**LoginModel**: Ez az osztály a bejelentkezési adatokat tárolja, nevezetesen a felhasználónevet és a jelszót.
+
+---
+
+<br>
+
+`login.component.ts:`
+```ts login.component.ts
+export class LoginComponent {
+  loginModel: LoginModel = new LoginModel()
+  
+  constructor(public authService: AuthService) { }
+
+  inputCheck(): boolean {
+    return !(this.loginModel.username.length > 3 && this.loginModel.password.length > 3)
+  }
+}
+```
+
+
+<br>
+
+`login.component.html:`
+```html login.component.html
+<input type="text" placeholder="username" [(ngModel)]="loginModel.username">
+<input type="password" placeholder="password" [(ngModel)]="loginModel.password">
+<button (click)="authService.login(loginModel)" [disabled]="inputCheck()">Login</button>
+```
+
+<br>
+
+> **LoginComponent**: Ez a komponens kezeli a felhasználói bejelentkezést. Tartalmaz egy `loginModel` objektumot, amely a felhasználó által megadott felhasználónevet és jelszót tárolja. A `inputCheck()` metódus ellenőrzi, hogy a felhasználónév és jelszó legalább 4 karakter hosszú-e, és ennek megfelelően engedélyezi vagy tiltja a bejelentkezés gombot. A bejelentkezési folyamatot az `AuthService` `login()` metódusa végzi.
+
+---
+
+<br>
+
+**6.)** Most megnézzük a logout. Annyira gyorsan lefut hogy fölösleges egy komponens, de a itt csinálunk több dolgot, pl megnézi nincs e folyamatba valami és felugrik egy ablak hogy biztos ki akarsz a lépni. Logout igazából csak egyetlen metódus hívás ezért fölösleges külön komponenes neki.
 Ez a logout lényegében annyi hogy auth service-ben egy metódussal kitöröljük a locastorage-ben eltárolt tokent
 
 
-Azt is meg kell oldanunk, hogy ha nem vagyunk belépve akkor a logint lássuk ha pedig be vagyunk lépve akkor logout-ot lássuk. Ezt az auth service-ben nézzük, amiben a localstorage-ban megnézzük hogy üres e a tokenünk és ngIf-vel döntjük el hogy melyik jelenjen meg.
+`logout.component.ts:`
+```ts logout.component.ts
+export class LogoutComponent {
 
-Ha egy menüpontot pl ugyanígy megoldjuk ngIf-vel hogy el legyen rejte valami akkor rárakhatnánk ugyanezt, viszont ez nem jó mert url-ből elérhető így biztonságilag ez nem jó.
+  constructor(private authService: AuthService, private router: Router) {
+    authService.logout()
+    this.router.navigate(["login"])
+  }
+}
+```
+
+<br>
+
+>**LogoutComponent**: Ez a komponens kezeli a felhasználói kijelentkezést. A komponens konstruktorában meghívja az `AuthService` `logout()` metódusát, amely eltávolítja a hitelesítési tokent a helyi tárolóból, majd átirányítja a felhasználót a bejelentkezési oldalra.
+
+
+---
+
+<br>
+
+`demo-comp-a.component.html:`
+```html demo-comp-a.component.html
+<div>
+    <h1>Demo Component -A-</h1>
+    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptate ab perspiciatis soluta magnam sequi odit adipisci voluptas possimus nihil! Blanditiis neque earum porro voluptates. Neque quaerat quia assumenda dolore ipsam?</p>
+    <p>Lorem ipsum dolor sit.</p>
+</div>
+```
+
+<br>
+
+>**DemoCompAComponent**: Ez egy egyszerű bemutató komponens, amely statikus tartalmat jelenít meg. Nincs benne speciális logika vagy interakció.
+
+---
+
+<br>
+
+`demo-comp-b.component.ts:`
+```ts demo-comp-b.component.ts
+export class DemoCompBComponent {
+  jobId: string = ""
+  constructor(private http: HttpClient) { }
+  deleteJob(): void {
+
+    const token = JSON.parse(localStorage.getItem(environment.tokenKey)!).token
+
+    const headers = new HttpHeaders()
+      .set("Authorization", `Bearer ${token}`)
+      .set("Content-Type", "application/json")
+
+    this.http.delete(`${environment.apis.job}`, {
+      headers,
+      body: { id: this.jobId }
+    }).subscribe(x => {
+      console.log(x)
+    })
+  }
+}
+```
+
+<br>
+
+`demo-comp-b.component.html:`
+```html demo-comp-b.component.html
+<div>
+    <h1>Demo Component -B-</h1>
+    <p>f5e6d7c8-1234-5678-9101-1121-314151617181</p>
+    <input type="text" [(ngModel)]="jobId" placeholder="job's id">
+    <button (click)="deleteJob()">Delete job</button>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, culpa at? Mollitia cupiditate, deserunt expedita a, provident dolorem suscipit dolorum quia eligendi libero cum cumque ipsum quo! Minus, voluptatem cum.</p>
+</div>
+```
+
+<br>
+
+>**DemoCompBComponent**: Ez a komponens egy bemutató funkciót valósít meg, amely lehetővé teszi a felhasználó számára, hogy egy adott azonosító alapján töröljön egy munkát. A komponens tartalmaz egy `jobId` változót, amely a felhasználó által megadott azonosítót tárolja. A `deleteJob()` metódus lekéri a hitelesítési tokent a helyi tárolóból, majd egy HTTP DELETE kérést küld az API-nak a megadott azonosítóval.
+
+
+---
+
+<br>
+
+`app-routing.module.ts:`
+```ts app-routing.module.ts
+const routes: Routes = [
+  { path: "", redirectTo: "login", pathMatch: "full" },
+  { path: "compa", component: DemoCompAComponent },
+  { path: "compb", component: DemoCompBComponent, canActivate: [authGuard] },
+  { path: "login", component: LoginComponent }, 
+  { path: "logout", component: LogoutComponent },
+  { path: "**", redirectTo: "login", pathMatch: "full" }
+];
+```
+
+<br>
+
+>**AppRoutingModule**: Ez a modul kezeli az alkalmazás útvonalait. Meghatározza, hogy melyik komponens melyik útvonalhoz tartozik, és beállítja az útvonalvédelmet a `DemoCompBComponent` számára az `AuthGuard` segítségével, amely biztosítja, hogy csak hitelesített felhasználók férhessenek hozzá ehhez a komponenshez.
+
+---
+
+<br>
+
+`app.component.html:`
+```html app.component.html
+<h1>Login demo</h1>
+
+<hr>
+
+<ul>
+  <li *ngIf="!authService.isLoggedIn(); else logOutSection"><a routerLink="login">Login</a></li>
+  <ng-template #logOutSection>
+    <li><a routerLink="logout">Logout</a></li>
+  </ng-template>
+  <li><a routerLink="compa">Component A</a></li>
+  <li><a routerLink="compb">Component B</a></li>
+</ul>
+
+<hr>
+
+<router-outlet></router-outlet>
+```
+
+<br>
+
+`app.component.ts:`
+```ts app.component.ts
+export class AppComponent {
+  constructor(public authService: AuthService) { }
+}
+```
+
+<br>
+
+>**AppComponent**: Ez a fő alkalmazás komponens, amely tartalmazza a navigációs menüt és a router outlet-et. A menüben feltételesen jeleníti meg a bejelentkezési vagy kijelentkezési linket az `AuthService` `isLoggedIn()` metódusa alapján.
+
+---
+
+<br>
+
+`auth.token.ts:`
+```ts auth.token.ts
+export class AuthToken {
+}
+```
+
+<br>
+
+>**AuthToken**: Ez egy egyszerű osztály, amely a hitelesítési tokent reprezentálja. Jelenleg nincs benne mező, de később bővíthető a tokennel kapcsolatos információkkal.
+
+---
+
+<br>
+
+**10.)** Végül pedig a routing védelmét nézzük meg. Ezt a routing modulban tudjuk megtenni a canActivate-vel. Itt most egy egyszerű logikát használunk, hogy megnézzük van e token a localstorage-ben és ha van akkor engedélyezzük a routingot. Ez egy egyszerűbb megoldás, de lehetne bonyolultabb is pl ellenőrizhetnénk a tokent hogy lejárt e stb.
+
+
+`auth.guard.ts`
+```ts auth.guard.ts
+export const authGuard: CanActivateFn = (route, state) => {
+  const value = localStorage.getItem(environment.tokenKey)
+  if (!value) return false
+  return value.length > 10
+};
+```
+
+<br>
+
+>**AuthGuard**: Ez egy útvonalvédelmi őr, amely megakadályozza, hogy nem hitelesített felhasználók hozzáférjenek bizonyos útvonalakhoz. A `canActivate` metódus ellenőrzi, hogy van-e érvényes hitelesítési token a helyi tárolóban.
+
+---
+
+
+
+<br>
+
+**5.)** csinálunk environmentset is amibe kirakjuk az apit ha már tanultunk ilyet. A tokent is kirakjuk ide egy környezeti változóba.
+
+`environment.development.ts`
+```ts environment.development.ts
+export const environment = {
+    apis: {
+        login: "https://api.siposm.hu/login",
+        developer: "https://api.siposm.hu/getDevelopers",
+        job: "https://api.siposm.hu/job",
+    },
+    tokenKey: "my-custom-token-key"
+};
+```
+
+<br>
+
+>**Environment Configuration**: Ez a konfigurációs fájl tartalmazza az API végpontokat és a hitelesítési token kulcsát, amelyet a helyi tárolóban használnak. 
+
+
+---
+
+<br>
+
+**1.)** Csinálunk egy külön servicet-t ahhoz hogy kezeljük a bejelentkezést: login metódus. És ezt a metódust meghívjuk a login kompononsben.
+
+**3.)** A következő lépés a backend meghívása. amihez az api.siposm-et használjuk. A service-ben most lekódoljuk a login methódust. És a megkapott tokent localstoreage-ben eltároljuk.
+
+>**4.)** Post után <>-ilyenbe fel tudjuk készíteni hogy milyen választ várunk.
+Ehhez létrehozunk egy AuthToken class-t. Ez akkor fontos ha több infót is kapunk pl mikor jár le és nem csak egy stringet kapunk.
+
+**7.)** Azt is meg kell oldanunk, hogy ha nem vagyunk belépve akkor a logint lássuk ha pedig be vagyunk lépve akkor logout-ot lássuk. Ezt az auth service-ben nézzük, amiben a localstorage-ban megnézzük hogy üres e a tokenünk és ngIf-vel döntjük el hogy melyik jelenjen meg.
+
+
+> **8b.)** Ha egy menüpontot pl ugyanígy megoldjuk ngIf-vel hogy el legyen rejte valami akkor rárakhatnánk ugyanezt, viszont ez nem jó mert url-ből elérhető így biztonságilag ez nem jó.
 Ezért az auth serviceben csinálunk egy olyat, hogy "canActivet()" ami megnézi hogy be van e lépve, majd a app routing-ben rárakunk egy pathra egy canActive-et és átadjuk negi [AuthService]. Ez csak akkorműködik ha auth serviceben is canActive a neve!!!!
 
-Két részre kell bontani hogy rooting alapján elérem e és azt is hogy látom e. 
-A canActivate neve: "auth Guard"
 
-
+> **9.)** Két részre kell bontani hogy rooting alapján elérem e és azt is hogy látom e.  A canActivate neve: "auth Guard"
 Azonban ezt is lehet egy kicsit szebben csinálni. Ugyanis a service-nek nem egészen feladata a rooting levédése.
-Szóval "ng g guard auth" és ha regeneráljuk akkor felkínál egy interakciós fület. Nekünk a canActivate-kell. és ide illeszük be a logikát ami nézi hogy be vagyunk e jelentkezve. Ezután az approutingban a AuthService helyette az AuthGardot adjuk át a canActivate-nek.
-
-
-Még azt nem csináltuk meg hogy token birtokában küldtünk egy api hívást.
-header-ben adjuk át a tokent, a bodyba meg azt amit vár az api.
-Ezt mi most a componenentB-be csináljuk meg. Törölni akarunk id alapján. Tehát input mezőbe bekérjük az ID-t. majd a deleteJob() metódusban lekódoljuk a törlést
-beállítjuk a header-t. 
+Szóval `ng g guard auth` és ha regeneráljuk akkor felkínál egy interakciós fület. Nekünk a canActivate-kell. és ide illeszük be a logikát ami nézi hogy be vagyunk e jelentkezve. Ezután az approutingban a AuthService helyette az AuthGardot adjuk át a canActivate-nek.
 
 
 
-S.H. -> session hijack
-a hijack jelentése eltérítés. 
+`auth.service.ts:`
+```ts auth.service.ts
+export class AuthService {
+
+  constructor(private http: HttpClient) { }
+
+  // canActivate(): boolean {
+  //   return this.isLoggedIn()
+  // }
+
+  isLoggedIn(): boolean {
+    const value = localStorage.getItem(environment.tokenKey)
+    if (!value) return false
+    return value.length > 10
+  }
+
+  login(loginModel: LoginModel): void {
+    this.http.post<AuthToken>(environment.apis.login, loginModel).subscribe(token => {
+      // check and set token expiration etc. here
+      localStorage.setItem(environment.tokenKey, JSON.stringify(token))
+    })
+  }
+
+  logout(): void {
+    localStorage.removeItem(environment.tokenKey)
+    // call backend logout etc.
+  }
+}
+```
+
+<br>
+
+>**AuthService**: Ez a szolgáltatás kezeli a hitelesítési folyamatokat, beleértve a bejelentkezést, kijelentkezést és a hitelesítési állapot ellenőrzését. A `login()` metódus egy HTTP POST kérést küld az API-nak a bejelentkezési adatokkal, és a válaszként kapott tokent eltárolja a helyi tárolóban. A `logout()` metódus eltávolítja a tokent, míg az `isLoggedIn()` metódus ellenőrzi, hogy van-e érvényes token.
+
+---
+
+
+
+
+
+
+### S.H.
+S.H. -> session hijack <br>
+A hijack jelentése eltérítés. <br>
 Ha valakinek a gépéről ki tudom nyerni a tokenét, akkor utána a saját gépemen a localstorage-be csak beírok a keyt és az értékét.
 
 
