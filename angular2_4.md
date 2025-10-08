@@ -1,12 +1,16 @@
 # Angular2 4.hét 4.óra
 
-## TANANYAG: Ismétlés
+## TANANYAG: Ismétlés - authentikáció egyszerű tokennel, nem jwt-vel
 
 Ábrákon keresztül átbeszéltük, hogy hogyan kommunikál a frontend és a backend bejelentkezés majd elemek listázása során.
 
+![angular2_4_1-auth](https://github.com/oli-tolnai/Angular2/blob/main/kepek/angular2_4_1-auth.png)
 
+Az első ábrán a bejelentkezés folyamata látható. Input mezőkbe beírjuk a bejelentkezéshez szükséges adatokat (username, password), majd a submit gombra kattintva elküldjük a bejelentkezési kérést a backendnek. A backend ellenőrzi az adatokat, és ha helyesek, akkor visszaküld egy tokent JSON formátumban, amelyet a frontend elment a böngészőben (pl. localStorage-ben vagy sessionStorage-ben). Ez a token szolgál azonosítóként a későbbi kérésekhez.
 
-ismétlésként rajzolás közben megbeszétük hogyan működik a bejelentkezés majd egy elemek listázása és a backend és frontend hogyan kommunikál
+![angular2_4_2-auth](https://github.com/oli-tolnai/Angular2/blob/main/kepek/angular2_4_2-auth.png)
+
+A második ábrán egy védett erőforrás elérésének folyamata látható. Amikor a felhasználó megpróbál hozzáférni egy védett erőforráshoz (pl. egy lista megtekintése), a frontend elküldi a kérést a backendnek, és a kérés fejléceiben elküldi a korábban kapott tokent. A backend ellenőrzi a tokent, és ha érvényes, akkor visszaküldi a kért adatokat (pl. egy elemek listáját) JSON formátumban. Ha a token érvénytelen vagy hiányzik, akkor a backend visszaküld egy hibakódot (pl. 401 Unauthorized), és a frontend ennek megfelelően reagál.
 
 
 ## TANANYAG: [auth-login-jwt](https://github.com/siposm/bprof-frontend-weekly/tree/master/angular/auth-login-jwt)
