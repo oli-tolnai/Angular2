@@ -1,10 +1,15 @@
 # Angular2 4.hét 4.óra
 
-autg.login-simple-token-re lett átnevezve az órai feladat.
+## TANANYAG: Ismétlés
+
+Ábrákon keresztül átbeszéltük, hogy hogyan kommunikál a frontend és a backend bejelentkezés majd elemek listázása során.
+
+
 
 ismétlésként rajzolás közben megbeszétük hogyan működik a bejelentkezés majd egy elemek listázása és a backend és frontend hogyan kommunikál
 
-## TANANYAG: auth-login-jwt
+
+## TANANYAG: [auth-login-jwt](https://github.com/siposm/bprof-frontend-weekly/tree/master/angular/auth-login-jwt)
 
 > dotnet run-nal tudjuk futtatni a backendet és nem visual studioban kell megnyitni és futtatni
 

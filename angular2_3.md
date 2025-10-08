@@ -438,7 +438,7 @@ Ez azt jelenti hogy a servicek életciklusát nem mi kezeljük hanem az IOC kont
 
 
 
-## TANANYAG: Authetication
+## TANANYAG: [Authetication - simple token](https://github.com/siposm/bprof-frontend-weekly/tree/master/angular/auth-login-simple-token)
 
 
 Backenden olyan volt ez, hogy voltak api végpontok és voltak ahol voltak lakatok, amit csak bejelentkezett felhasználk tudták használni.
