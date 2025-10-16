@@ -168,7 +168,7 @@ else
 ```
 **Ha egy ilyet akarunk tesztelni akkor minden ágat tesztelni kell!**
 
-Alábbi dokumentumban részletesen olvashatunk a tesztelésről: [siposm/testing.md]("https://github.com/siposm/bprof-frontend-weekly/blob/master/angular/materials/testing.md")<br>
+Alábbi dokumentumban részletesen olvashatunk a tesztelésről: [siposm/testing.md](https://github.com/siposm/bprof-frontend-weekly/blob/master/angular/materials/testing.md)<br>
 A dokumentumban a **test double eszköztár** fontos. Ezeknél a legtöbb hasonlít egymásra, kivéve a `spy`.
 
 #### Ölab-on a teszteket generálhatjuk AI-val
