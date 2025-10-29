@@ -159,6 +159,7 @@ behaviorsubject-nél a .next új érték kibocsátására alkalmas és a másik 
 BehaviorSubject:
 - next
 - value
+
 `product.service.ts`
 ``` ts product.service.ts
   A BehaviorSubject használatának az a lényege, hogy nem csupán egy adatfolyamot (streamet) biztosít,
