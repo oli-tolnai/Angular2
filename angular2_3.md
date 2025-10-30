@@ -679,6 +679,10 @@ export const authGuard: CanActivateFn = (route, state) => {
 
 >**AuthGuard**: Ez egy útvonalvédelmi őr, amely megakadályozza, hogy nem hitelesített felhasználók hozzáférjenek bizonyos útvonalakhoz. A `canActivate` metódus ellenőrzi, hogy van-e érvényes hitelesítési token a helyi tárolóban.
 
+```cmd
+hg generate guard Auth
+```
+
 ---
 
 
