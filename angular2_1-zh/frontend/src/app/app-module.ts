@@ -3,22 +3,24 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { SongListComponent } from './song-list/song-list.component';
-import { SongDetail } from './song-detail/song-detail';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { CreateComponent } from './create/create.component';
+import { ListComponent } from './list/list.component';
 
 @NgModule({
   declarations: [
     App,
-    SongListComponent,
-    SongDetail
+    WelcomeComponent,
+    CreateComponent,
+    ListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners()
